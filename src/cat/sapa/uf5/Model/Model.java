@@ -29,33 +29,50 @@ public class Model {
 
             fi = false;
         }
-        public static void posarBandera(int fila, int columna) {
+        public static int posarBandera(int fila, int columna) {
             if (jocCampMines[fila][columna] == '·') {
                 jocCampMines[fila][columna] = 'B';
+                for (int i = 1; i <= 10 - 1; ++i) {
+                    for(int j = 1;j <= 10 - 1; ++j){
+                        System.out.print(jocCampMines[i][j]);
+                }
+                    System.out.println("");
+                }
+                return 0;
                 //Vista.mostrarCampMines(jocCampMines);
             } else if (jocCampMines[fila][columna] == 'B') {
                 jocCampMines[fila][columna] = '·';
+                return 1;
                 //Vista.mostrarCampMines(jocCampMines);
             } else {
                 System.out.println("Aqui no pots posar una bandera");
             }
             haGuanyat();
+            return 2;
         }
-        public static void trepitjar(int fila, int columna) {
+        public static char trepitjar(int fila, int columna) {
+            char valor;
             if (jocCampMines[fila][columna] == '·') {
                 if (campMines[fila][columna] == 'B') {
                     fi = true;
-                    mostrarBombes();
+                    valor = 'B';
+                    //mostrarBombes();
+
                     //Vista.mostrarCampMines(jocCampMines);
                     //Vista.mostrarMissatge("HAS TREPITJAT UNA BOMBA !!!");
+                    return valor;
                 } else {
+                    valor = campMines[fila][columna];
                     //trepitjarVoltant(fila, columna);
                     trepitjarRecursivament(fila, columna);
+                    Vista.mostrarcamp(jocCampMines);
                     //Vista.mostrarCampMines(jocCampMines);
                     haGuanyat();
+                    return valor;
                 }
             } else {
                 System.out.println("Aqui no pots trepitjar");
+                return 'N';
             }
         }
         public static boolean haAcabat() {
@@ -140,7 +157,7 @@ public class Model {
                 }
             }
             fi = true;
-            //Vista.mostrarMissatge("HAS GUANYAT !!!");
+            Vista.mostrarMissatge("HAS GUANYAT !!!");
         }
 
 
