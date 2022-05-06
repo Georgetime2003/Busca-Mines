@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="Busca Mines:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/Busca_Mines_jar</output-path>
+    <root id="archive" name="Busca Mines.jar">
+      <element id="module-output" name="Busca Mines" />
+    </root>
+  </artifact>
+</component>

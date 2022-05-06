@@ -1,15 +1,47 @@
+/**
+ * Classe Model del Busca Mines
+ * @author Pere Sánchez amb modificacions de Jordi Palomino Escarrà
+ * @version 1.0
+ */
+
 package cat.sapa.uf5.Model;
 
 import cat.sapa.uf5.*;
 import cat.sapa.uf5.Vista.Vista;
 
+import javax.swing.*;
+
+/**
+ * Classe principal del Model
+ */
 public class Model {
+    /**
+     *  Enter on es diuen el nombre de files de l'Array Bidimensional
+     */
         public static int files;
+    /**
+     * Enter on es diuen el nombre de columnes de l'Array Bidimensional
+     */
         public static int columnes;
+    /**
+     * Enter on es diuen el nombre de bombes de l'Array Bidimensional
+     */
         public static int bombes;
+    /**
+     * ArrayBidimensional del Camp de Mines Ocult del joc
+     */
         static char[][] campMines;
+    /**
+     * ArrayBidimensional del Camp de Mines Visible del joc
+     */
         static char[][] jocCampMines;
-        static boolean fi;
+
+    /**
+     * Mètode per inicialitzar el Joc en el Model
+     * @param f Enter amb el nombre de files
+     * @param c Enter amb el nombre de columnes
+     * @param b Enter amb el nombre de bombes
+     */
         public static void iniciar(int f, int c, int b) {
             files = f + 2;
             columnes = c + 2;
@@ -24,12 +56,14 @@ public class Model {
             posarBombes();
             comptarBombesProperes();
 
-            //Vista.mostrarCampMines(campMines);
-            //Vista.mostrarCampMines(jocCampMines);
-
-            fi = false;
         }
-        public static int posarBandera(int fila, int columna) {
+
+    /**
+     * Mètode per posar bandera a l'Array
+     * @param fila Enter per saber la posició de la fila
+     * @param columna Enter per saber la posició de la columna
+     */
+        public static void posarBandera(int fila, int columna) {
             if (jocCampMines[fila][columna] == '·') {
                 jocCampMines[fila][columna] = 'B';
                 for (int i = 1; i <= 10 - 1; ++i) {
@@ -38,48 +72,51 @@ public class Model {
                 }
                     System.out.println("");
                 }
-                return 0;
-                //Vista.mostrarCampMines(jocCampMines);
+                Vista.mostrarcamp(jocCampMines);
+
             } else if (jocCampMines[fila][columna] == 'B') {
                 jocCampMines[fila][columna] = '·';
-                return 1;
-                //Vista.mostrarCampMines(jocCampMines);
+                Vista.mostrarcamp(jocCampMines);
+
             } else {
-                System.out.println("Aqui no pots posar una bandera");
+                JOptionPane.showMessageDialog(null,"Aqui no pots posar una bandera");
+                return;
             }
             haGuanyat();
-            return 2;
         }
-        public static char trepitjar(int fila, int columna) {
+
+    /**
+     * Mètode per trepitjar una cel·la
+     * @param fila Enter per saber la posició de la fila
+     * @param columna Enter per saber la posició de la columna
+     */
+        public static void trepitjar(int fila, int columna) {
             char valor;
             if (jocCampMines[fila][columna] == '·') {
                 if (campMines[fila][columna] == 'B') {
-                    fi = true;
                     valor = 'B';
-                    //mostrarBombes();
 
-                    //Vista.mostrarCampMines(jocCampMines);
-                    //Vista.mostrarMissatge("HAS TREPITJAT UNA BOMBA !!!");
-                    return valor;
+                    Vista.mostrarbombes(campMines);
+                    JOptionPane.showMessageDialog(null, "Has trepitjat una bomba, fi del joc.");
+
                 } else {
                     valor = campMines[fila][columna];
-                    //trepitjarVoltant(fila, columna);
                     trepitjarRecursivament(fila, columna);
                     Vista.mostrarcamp(jocCampMines);
-                    //Vista.mostrarCampMines(jocCampMines);
                     haGuanyat();
-                    return valor;
+
                 }
             } else {
-                System.out.println("Aqui no pots trepitjar");
-                return 'N';
+                JOptionPane.showMessageDialog(null, "Aqui no pots trepitjar!");
             }
         }
-        public static boolean haAcabat() {
-            return fi;
-        }
 
-        static void inicialitzarCampMines(char[][] cm, char c) {
+    /**
+     * Mètode d'inicialitzacio del camp de Mines buit
+     * @param cm Array bidimensional del Camp de mines Ocult o visible
+     * @param c Caracter per posicionar a la cel·la
+     */
+    static void inicialitzarCampMines(char[][] cm, char c) {
             for (int fila = 0; fila < files; fila++) {
                 for (int columna = 0; columna < columnes; columna++) {
                     cm[fila][columna] = c;
@@ -87,8 +124,10 @@ public class Model {
             }
         }
 
-
-        static void posarBombes() {
+    /**
+     * Mètode per col·locar les bombes al camp de Mines Ocult
+     */
+    static void posarBombes() {
             int fila, columna;
 
             for (int i = 0; i < bombes; i++) {
@@ -100,7 +139,10 @@ public class Model {
             }
         }
 
-        static void comptarBombesProperes() {
+    /**
+     * Mètode per posar el número de bombes que hi ha al cantó d'una cel·la
+     */
+    static void comptarBombesProperes() {
             int nBombes;
 
             for (int fila = 1; fila < files - 1; fila++) {
@@ -114,6 +156,12 @@ public class Model {
             }
         }
 
+    /**
+     * Metòde per comptar el nombre de bombes
+     * @param fila Enter amb la posició de la fila de la cel·la
+     * @param columna Enter amb la posició de la columna de la cel·la
+     * @return Enter amb el nombre de bombes que té al voltant
+     */
         static int comptar1(int fila, int columna) {
             int nBombes = 0;
 
@@ -129,23 +177,7 @@ public class Model {
             return nBombes;
         }
 
-        /**
-         * Comptar les bombes del voltant utilitzant bucles
-         * @param fila Fila central
-         * @param columna Columna central
-         * @return Nombre de bombes que hi ha al voltant
-         */
-        static int comptar2(int fila, int columna) {
-            int nBombes = 0;
 
-            for (int f = fila - 1; f <= fila + 1; ++f) {
-                for (int c = columna - 1; c <= columna + 1; ++c) {
-                    if (campMines[f][c] == 'B') nBombes++;
-                }
-            }
-
-            return nBombes;
-        }
 
         /**
          * Comprovar si ha trobat totes les bombes i caselles lliures.
@@ -156,42 +188,16 @@ public class Model {
                     if (jocCampMines[fila][columna] != campMines[fila][columna]) return;
                 }
             }
-            fi = true;
-            Vista.mostrarMissatge("HAS GUANYAT !!!");
+            JOptionPane.showMessageDialog(null,"Has Guanyat!");
         }
 
 
-        static void mostrarBombes() {
-            for (int fila = 1; fila < files - 1; fila++) {
-                for (int columna = 1; columna < columnes - 1; columna++) {
-                    if (campMines[fila][columna] == 'B' && jocCampMines[fila][columna] != 'B')
-                        jocCampMines[fila][columna] = '*';
-                    if (jocCampMines[fila][columna] == 'B' && campMines[fila][columna] != 'B')
-                        jocCampMines[fila][columna] = '/';
-                }
-            }
-        }
-
-
-        static void trepitjarVoltant(int fila, int columna) {
-            if (jocCampMines[fila][columna] != '·') return;
-
-            destapar(fila, columna);
-
-            if (campMines[fila][columna] == ' ') {
-                destapar(fila - 1, columna - 1);
-                destapar(fila - 1, columna);
-                destapar(fila - 1, columna + 1);
-                destapar(fila, columna - 1);
-                destapar(fila, columna + 1);
-                destapar(fila + 1, columna - 1);
-                destapar(fila + 1, columna);
-                destapar(fila + 1, columna + 1);
-            }
-        }
-
-
-        static void trepitjarRecursivament(int fila, int columna) {
+    /**
+     * Mètode per buscar recursivament fins que es trobi amb un valor enter
+     * @param fila Enter amb la posició de la fila de la cel·la
+     * @param columna Enter amb la posició de la columna de la cel·la
+     */
+    static void trepitjarRecursivament(int fila, int columna) {
             if(!verificarFilaColumna(fila, columna)) return;
             if (jocCampMines[fila][columna] != '·') return;
             destapar(fila, columna);
@@ -206,12 +212,21 @@ public class Model {
             trepitjarRecursivament(fila + 1, columna + 1);
         }
 
-
-        static void destapar(int fila, int columna) {
+    /**
+     * Mètode per destapar la casella que es trepitja
+     * @param fila Enter amb la posició de la fila de la cel·la
+     * @param columna Enter amb la posició de la columna de la cel·la
+     */
+    static void destapar(int fila, int columna) {
             jocCampMines[fila][columna] = campMines[fila][columna];
         }
 
-
+    /**
+     * Verifica la posició trepitjada
+     * @param fila Enter amb la posició de la fila de la cel·la
+     * @param columna Enter amb la posició de la columna de la cel·la
+     * @return true si la comprovació és correcte o false si és el contrari
+     */
         public static boolean verificarFilaColumna(int fila, int columna) {
             return fila >= 1 && fila < files - 1 && columna >= 1 && columna < columnes - 1;
 
